@@ -16,21 +16,30 @@ int main(int argc, char *argv[]) {
 
 	int n;
     float sum;
+    int i, j;
 	Project* projects = read_file(argv[1], &n, &sum);
 
-	for (int i = 0; i < n; i++) {
+    if(sum <= MAX_SIZE_ART_GROUP){
+        printf("Todas as A.R.Ts podem ser agrupadas em apenas uma!\n");
+        exit(0);
+    }
+
+	for (i = 0; i < n; i++) {
 		printf("%d %.2f\n", projects[i].id, projects[i].art);
 	}
 
-    uint8_t **combinations = malloc(pow(2, n) * sizeof(uint8_t*));
+    int number_of_combinations = pow(2, n) - 1;
+
+    uint8_t **combinations = malloc(number_of_combinations * sizeof(uint8_t*));
     uint8_t combination[n];
 
-    for (int i = 1; i < pow(2, n); i++) {
+    // parallel for aqui
+    for (i = 0; i < number_of_combinations; i++) {
         float combination_sum = 0;
         
-        for (int j = n-1; j >= 0; j--) { 
+        for (j = n-1; j >= 0; j--) { 
             
-            if ((i >> j) & 1){
+            if (((i+1) >> j) & 1){
                 combination[n-1-j] = 1;
                 combination_sum += projects[n-1-j].art;
             }else{
@@ -46,16 +55,31 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
-
-    for (int i = 1; i < pow(2, n); i++) {        
-        if(combinations[i] != NULL){
-            printf("%d ", i);
-            for (int j = 0; j < n; j++) { 
-                printf("%d", combinations[i][j]);
+    //função para eliminar linhas vazias da matriz
+    for(i = 0; i < number_of_combinations-1; i++){
+        if(combinations[i] == NULL){
+            for(j = number_of_combinations-1; j > i; j--){
+                number_of_combinations--;
+                if(combinations[j] != NULL){
+                    combinations[i] = combinations[j];
+                    combinations[j] = NULL;
+                    break;
+                }                
             }
-            printf("\n");
+            if(combinations[i] == NULL)
+                number_of_combinations--;
+
         }
+    }
+
+
+    for (int i = 0; i < number_of_combinations; i++) {        
+        printf("%d ", i);
+        for (int j = 0; j < n; j++) { 
+            printf("%d", combinations[i][j]);
+        }
+        printf("\n");
+
     }
 
 	return 0;
