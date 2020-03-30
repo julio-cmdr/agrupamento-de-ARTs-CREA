@@ -8,6 +8,20 @@
 
 #define MAX_SIZE_ART_GROUP 130
 
+int verify_groups(int **combinations, int n, int qty){
+    int sum;
+    for(int i = 0; i < n; i++){
+        sum = 0;
+        for(int j = 0; j < qty; j++)
+            sum += combinations[j][i];
+
+        if(sum != 1)
+            return 0;
+    }
+
+    return 1;
+}
+
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
 		printf("Favor passar um arquivo de entrada!\n");
