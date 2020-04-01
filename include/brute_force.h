@@ -1,14 +1,14 @@
 /**
  * Developed for Sicoob Credivertentes - São Tiago - MG
  *
- * project.c
+ * brute_force.c
  *
  * Júlio Resende - julio.cmdr@gmail.com
  *
  */
 
-#ifndef PROJECT_H
-#define PROJECT_H
+#ifndef BRUTE_FORCE_H
+#define BRUTE_FORCE_H
 
 #include <string.h>
 #include <stdint.h>
@@ -16,14 +16,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <omp.h>
+#include <math.h>
+#include "project.h"
 
-#define MAX_ART_SUM 233.94
+int run_brute_force(Project* projects, int number_of_projects, int group_size);
 
-typedef struct project {
-	int id;
-	float art;
-}Project;
-
-Project* read_file(char *file, int *n, float *sum);
-
-#endif // PROJECT_H
+#endif // BRUTE_FORCE_H
