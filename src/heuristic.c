@@ -21,7 +21,9 @@ uint64_t bit_update(uint64_t src, uint64_t pos, uint64_t value) {
     return (src & masc) | (value << pos);
 } 
 
-int run_heuristic(Project* projects, int number_of_projects, int group_size){
+// A Heurística inicialmente ordena os projetos em ordem decrescente e depois vai tentando lotar o grupo de combinações
+// A combinação é representada por um inteiro positivo 64 bits, em que cada bit representa a presença de um produto na combinaçãos
+uint64_t *run_heuristic(Project* projects, int number_of_projects, int group_size){
     
     uint64_t *group = calloc(group_size, sizeof(uint64_t));
     
@@ -48,22 +50,9 @@ int run_heuristic(Project* projects, int number_of_projects, int group_size){
     
     uint64_t complemento = pow(2, 64) - pow(2, number_of_projects);
     
-    if(bitmap + complemento == pow(2, 64) - 1){
-
-        printf("Grupo encontrado! Combinações em base 10:\n");
-
-        for(int i = 0; i < group_size; i++){
-            printf("%I64d\n", group[i]);
-            for (int j = number_of_projects-1; j >= 0; j--){
-                printf("%d", (int)(((group[i]) >> j) & 1));
-            }
-            printf("\n");
-        }
-        
-        return 1;
-
+    if(bitmap + complemento == pow(2, 64) - 1){    
+        return group;
     }else{
-        printf("Não é possível agrupar em grupos de %d\n", group_size);
-        return 0;
+        return NULL;
     }
 }

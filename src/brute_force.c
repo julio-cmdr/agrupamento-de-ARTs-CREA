@@ -74,27 +74,15 @@ int generate_groups(uint64_t *group, int group_size, Project *projects, int numb
     return 0;
 }
 
-int run_brute_force(Project* projects, int number_of_projects, int group_size, int num_threads){
+uint64_t *run_brute_force(Project* projects, int number_of_projects, int group_size, int num_threads){
     uint64_t number_of_combinations = pow(2, number_of_projects) - 1;
     
-    uint64_t group[group_size + num_threads];
+    uint64_t *group = malloc((group_size + num_threads)*sizeof(uint64_t));
 
     if(generate_groups(group, group_size, projects, number_of_projects, 1, number_of_combinations, 0)){
+        return group;
 
-        printf("Grupo encontrado! Combinações em base 10:\n");
-
-        for(int i = 0; i < group_size; i++){
-            printf("%I64d\n", group[i]);
-            for (int j = number_of_projects-1; j >= 0; j--){
-                printf("%d", (int)(((group[i]) >> j) & 1));
-            }
-            printf("\n");
-        }
-        
-        return 1;
-
-    }else{
-        printf("Não é possível agrupar em grupos de %d\n", group_size);
-        return 0;
+    }else{        
+        return NULL;
     }
 }

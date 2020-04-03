@@ -20,6 +20,6 @@
 #include <math.h>
 #include "project.h"
 
-int run_heuristic(Project* projects, int number_of_projects, int group_size);
+uint64_t *run_heuristic(Project* projects, int number_of_projects, int group_size);
 
 #endif // HEURISTIC_H

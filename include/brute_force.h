@@ -19,6 +19,6 @@
 #include <math.h>
 #include "project.h"
 
-int run_brute_force(Project* projects, int number_of_projects, int group_size, int num_threads);
+uint64_t *run_brute_force(Project* projects, int number_of_projects, int group_size, int num_threads);
 
 #endif // BRUTE_FORCE_H
