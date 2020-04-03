@@ -22,9 +22,9 @@ int group_is_valid(uint64_t *group, int group_size, Project *projects, int numbe
         for(int i = 0; i < group_size-1; i++){
             bits_sum += (((group[i]) >> j) & 1);
         }
-        bits_sum += (((group[group_size + thread_id - 1]) >> j) & 1);
+        bits_sum += (((group[group_size + thread_id]) >> j) & 1);
 
-        sum_last_combination += projects[number_of_projects-1-j].art * (((group[group_size + thread_id - 1]) >> j) & 1);
+        sum_last_combination += projects[number_of_projects-1-j].art * (((group[group_size + thread_id]) >> j) & 1);
 
         if(bits_sum != 1 || sum_last_combination > MAX_ART_SUM)
             return 0;
@@ -33,28 +33,24 @@ int group_is_valid(uint64_t *group, int group_size, Project *projects, int numbe
 }
 
 int parallel_analysis(uint64_t *group, int group_size, Project *projects, int number_of_projects, uint64_t start, uint64_t number_of_combinations){
-    int winner_thread_id = -1;
+    
+    group[group_size - 1] = 0;
 
     #pragma omp parallel for
     for(uint64_t i = start; i < number_of_combinations; i++){
-        group[group_size + omp_get_thread_num() - 1] = i;
+        group[group_size + omp_get_thread_num()] = i;
         
         if(group_is_valid(group, group_size, projects, number_of_projects, omp_get_thread_num())){
             #pragma omp critical
-		    {
-                winner_thread_id = omp_get_thread_num();
+            {
+                group[group_size - 1] = group[group_size + omp_get_thread_num()];
             }
-            break;   // -------------------------------------  isso gera erro! ----------------------------- //
+            //break;
         }
     }
-
-    if(winner_thread_id > 0){
-        group[group_size - 1] = group[group_size + winner_thread_id - 1];
-        return 1;
-    }
-    return 0;
+    
+    return (group[group_size - 1] > 0);
 }
-
 
 int generate_groups(uint64_t *group, int group_size, Project *projects, int number_of_projects, uint64_t start, uint64_t number_of_combinations, int level){
 
@@ -78,18 +74,22 @@ int generate_groups(uint64_t *group, int group_size, Project *projects, int numb
     return 0;
 }
 
-
 int run_brute_force(Project* projects, int number_of_projects, int group_size, int num_threads){
     uint64_t number_of_combinations = pow(2, number_of_projects) - 1;
     
-    uint64_t group[group_size + num_threads - 1];
+    uint64_t group[group_size + num_threads];
 
     if(generate_groups(group, group_size, projects, number_of_projects, 1, number_of_combinations, 0)){
 
         printf("Grupo encontrado! Combinações em base 10:\n");
 
-        for(int i = 0; i < group_size; i++)
+        for(int i = 0; i < group_size; i++){
             printf("%I64d\n", group[i]);
+            for (int j = number_of_projects-1; j >= 0; j--){
+                printf("%d", (int)(((group[i]) >> j) & 1));
+            }
+            printf("\n");
+        }
         
         return 1;
 
