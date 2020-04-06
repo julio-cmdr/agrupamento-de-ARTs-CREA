@@ -24,7 +24,7 @@ ifeq ($(OS),Windows_NT)
 	CFLAGS+= -mno-ms-bitfields
 #	LOADLIBES := -municode
 else
-	BIN := brute_force
+	BIN := main
 	DLE := so
 	ODIR := obj/linux
 endif

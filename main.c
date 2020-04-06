@@ -9,7 +9,16 @@ void print_group(Project *projects, int number_of_projects, uint64_t *group, int
         for (int j = number_of_projects-1; j >= 0; j--){
             printf("%d", (int)(((group[i]) >> j) & 1));
         }
-        printf("\n");
+        printf("\n\nProjetos:\n");
+        
+        float sum = 0;
+        for (int j = number_of_projects-1; j >= 0; j--){
+            if((int)(((group[i]) >> j) & 1)){
+                printf("%d %.2f\n", projects[j].id, projects[j].art);
+                sum += projects[j].art;
+            }
+        }
+        printf("Soma = %.2f\n\n", sum);
     }
 }
 
