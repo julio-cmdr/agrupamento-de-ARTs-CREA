@@ -16,9 +16,8 @@ void selection_sort(Project *projects, int number_of_projects){
     }
 }
 
-uint64_t bit_update(uint64_t src, uint64_t pos, uint64_t value) {
-    uint64_t masc = ~(1 << pos);
-    return (src & masc) | (value << pos);
+uint64_t bit_update(uint64_t src, uint64_t pos) {
+    return src | (1ULL << pos);
 } 
 
 // A Heurística inicialmente ordena os projetos em ordem decrescente e depois vai tentando lotar o grupo de combinações
@@ -37,11 +36,11 @@ uint64_t *run_heuristic(Project* projects, int number_of_projects, int group_siz
         sum = 0;
         for(int j = 0; j < number_of_projects; j++){
             masc = 0;
-            masc = bit_update(masc, j, 1);
+            masc = bit_update(masc, j);
 
             if(sum + projects[j].art <= MAX_ART_SUM && ((masc & bitmap) == 0)){
-                group[i] = bit_update(group[i], j, 1);
-                bitmap = bit_update(bitmap, j, 1);
+                group[i] = bit_update(group[i], j);
+                bitmap = bit_update(bitmap, j);
                 sum += projects[j].art;
             }
         }
